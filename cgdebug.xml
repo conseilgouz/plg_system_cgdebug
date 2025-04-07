@@ -31,7 +31,7 @@
 				<field name="passwordtype" type="radio" class="btn-group btn-group-yesno"
 					description="CG_DEBUG_TYPE_DESC"
 					label="CG_DEBUG_TYPE_LABEL"
-                    default="value">
+                    default="none">
 					<option value="none">JDISABLED</option>
 					<option value="value">CG_DEBUG_VALUE</option>
 				</field>
