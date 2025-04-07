@@ -9,6 +9,7 @@
         </note>
         <change>
             <item>Add installation script to enable plugin after installing it</item>
+            <item>Add link to plugin's parameter after installation.</item>
         </change>
 	</changelog>
 	<changelog>
