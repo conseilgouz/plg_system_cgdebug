@@ -1,4 +1,5 @@
 <?php
+
 /**
 * CG Debug  - Joomla 4.x/5.x Plugin
 * @license https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
@@ -38,19 +39,19 @@ final class Cgdebug extends CMSPlugin
         $stopval      = $this->params->get('stoptag', 'stopdebug');
         $godebug = isset($_GET[$goval]) ? $_GET[$goval] : null ;
         $stopdebug =  isset($_GET[$stopval]) ? $_GET[$stopval] : null;
-        if (!$godebug && !$stopdebug) {
+        if (is_null($godebug) && is_null($stopdebug)) {
             return;
         }
         $type = $this->params->get('passwordtype');
         if ($type == 'none') {
-            return;
+            $pwd = '';
         } elseif ($type == 'value') {
             $pwd = $this->params->get('valuepassword', '');
         }
 
-        if (isset($pwd) && ($godebug == $pwd)) {
+        if (!is_null($godebug) && ($godebug === $pwd)) {
             $this->debug = true;
-        } elseif (isset($pwd) && ($stopdebug == $pwd)) {
+        } elseif (!is_null($stopdebug) && ($stopdebug === $pwd)) {
             $this->debug = false;
         } else {
             return;
