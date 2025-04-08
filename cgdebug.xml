@@ -2,12 +2,12 @@
 <extension type="plugin" group="system" method="upgrade" version="4.0">
 	<name>System - CG Debug</name>
 	<author>conseilgouz</author>
-	<creationDate>2025-04-07</creationDate>
+	<creationDate>2025-04-08</creationDate>
 	<copyright>(C)2025 ConseilGouz. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>pascal.leconte@conseilgouz.com</authorEmail>
 	<authorUrl>www.conseilgouz.com</authorUrl>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<description>CG_DEBUG_DESC</description>
     <namespace path="src">ConseilGouz\Plugin\System\CGDebug</namespace>
     <scriptfile>script.cgdebug.php</scriptfile>
@@ -16,6 +16,10 @@
         <folder>src</folder>
 		<filename>index.html</filename>
 	</files>
+	<media destination="plg_system_cgdebug" folder="media">
+		<folder>css</folder>
+		<filename>index.html</filename>
+	</media>
 	<languages>
 		<language tag="en-GB">language/en-GB/plg_system_cgdebug.ini</language>
 		<language tag="en-GB">language/en-GB/plg_system_cgdebug.sys.ini</language>
@@ -28,6 +32,10 @@
                 addfieldprefix="ConseilGouz\Plugin\System\CGDebug\Field"
                 addruleprefix="ConseilGouz\Plugin\System\CGDebug\Rule">
    				<field name="version" type="version"  margintop="-3em"  extension="cgdebug" />
+                <field name="gotag" type="text" default="godebug"
+                label="CG_DEBUG_TAG" description="CG_DEBUG_TAG_DESC" />
+                <field name="stoptag" type="text" default="stopdebug"
+                label="CG_DEBUG_STOPTAG" description="CG_DEBUG_STOPTAG_DESC" />
 				<field name="passwordtype" type="radio" class="btn-group btn-group-yesno"
 					description="CG_DEBUG_TYPE_DESC"
 					label="CG_DEBUG_TYPE_LABEL"

@@ -13,7 +13,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\DI\Container;
 use Joomla\DI\ServiceProviderInterface;
-use Joomla\Database\DatabaseInterface;
 use Joomla\Event\DispatcherInterface;
 use ConseilGouz\Plugin\System\CGDebug\Extension\Cgdebug;
 
@@ -36,7 +35,6 @@ return new class () implements ServiceProviderInterface {
                     $container->get(DispatcherInterface::class),
                     (array) PluginHelper::getPlugin('system', 'cgdebug'),
                     Factory::getApplication(),
-                    $container->get(DatabaseInterface::class)
                 );
                 return $plugin;
             }

@@ -3,6 +3,23 @@
 		<element>plg_system_cgdebug</element>
 		<type>plugin</type>
 		<group>system</group>
+		<version>1.0.3</version>
+        <note>
+            <item>Update : 08/04/2025</item>
+        </note>
+        <fix>
+            <item>+ symbol not allowed in the password</item>
+        </fix>
+        <change>
+            <item>Fire check on construct instead of a Joomla event</item>
+            <item>New parameters : goDebug and stopDebug tags</item>
+            <item>Save error-reporting in prev_error_reporting field in configuration file</item>
+        </change>
+	</changelog>
+	<changelog>
+		<element>plg_system_cgdebug</element>
+		<type>plugin</type>
+		<group>system</group>
 		<version>1.0.2</version>
         <note>
             <item>Update : 07/04/2025</item>

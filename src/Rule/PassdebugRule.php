@@ -21,7 +21,7 @@ class PassdebugRule extends PasswordRule
 	public function test(\SimpleXMLElement $element, $value, $group = null, Registry $input = null,Form $form = null) {
 
         if (!empty($value)) {
-           $nHits = preg_match_all('/[%&]/', $value, $imatch);
+           $nHits = preg_match_all('/[%&+]/', $value, $imatch);
            if ($nHits > 0) {
                 Factory::getApplication()->enqueueMessage(Text::_('CG_DEBUG_INVALID_SPECIALS'),'error');
                 return false;

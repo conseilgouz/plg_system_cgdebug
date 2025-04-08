@@ -15,45 +15,29 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Uri\Uri;
-use Joomla\Database\DatabaseAwareTrait;
-use Joomla\Database\DatabaseInterface;
 use Joomla\Event\DispatcherInterface;
-use Joomla\Event\SubscriberInterface;
 use Joomla\Registry\Registry;
 use Joomla\Filesystem\File;
 use Joomla\Filesystem\Path;
 use Joomla\Utilities\ArrayHelper;
 
-final class Cgdebug extends CMSPlugin implements SubscriberInterface
+final class Cgdebug extends CMSPlugin
 {
-    use DatabaseAwareTrait;
-
     protected $debug = JDEBUG;
     protected $error_reporting;
     public $myname = 'Cgdebug';
     protected $autoloadLanguage = true;
 
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            'onAfterDispatch' => 'onAfterDispatch',
-        ];
-    }
-
-    public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app, DatabaseInterface $db)
+    public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app)
     {
         parent::__construct($dispatcher, $config);
 
         $this->setApplication($app);
-        $this->setDatabase($db);
 
-    }
-
-    public function onAfterDispatch()
-    {
-        $mainframe 	= Factory::getApplication();
-        $godebug = isset($_GET['godebug']) ? $_GET['godebug'] : null ;
-        $stopdebug =  isset($_GET['stopdebug']) ? $_GET['stopdebug'] : null;
+        $goval      = $this->params->get('gotag', 'godebug');
+        $stopval      = $this->params->get('stoptag', 'stopdebug');
+        $godebug = isset($_GET[$goval]) ? $_GET[$goval] : null ;
+        $stopdebug =  isset($_GET[$stopval]) ? $_GET[$stopval] : null;
         if (!$godebug && !$stopdebug) {
             return;
         }
@@ -66,24 +50,31 @@ final class Cgdebug extends CMSPlugin implements SubscriberInterface
 
         if (isset($pwd) && ($godebug == $pwd)) {
             $this->debug = true;
-            $this->error_reporting = 'maximum';
         } elseif (isset($pwd) && ($stopdebug == $pwd)) {
             $this->debug = false;
-            $this->error_reporting = 'none';
         } else {
             return;
         }
 
         $config = new \JConfig();
         $data   = ArrayHelper::fromObject($config);
-
+        if ($this->debug) { // save error_reproting value
+            $data['prev_error_reporting']   = $data['error_reporting'];
+            $data['error_reporting']        = "maximum";
+        } else {
+            if (isset($data['prev_error_reporting'])) {
+                $data['error_reporting'] =  $data['prev_error_reporting'];
+                unset($data['prev_error_reporting']);
+            }
+        }
         $data['debug'] = $this->debug;
-        $data['error_reporting'] = $this->error_reporting;
         $config = new Registry($data);
         $this->writeConfigFile($config);
-        $mainframe->redirect(URI::root());
+        $app->redirect(URI::root());
+
 
     }
+
     /**
      * Method to write the configuration to a file.
     *  from administrator/components/com_config/src/Model/ApplicationModel.php

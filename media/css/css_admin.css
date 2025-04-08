@@ -1,0 +1,17 @@
+/**
+ * @package		CGDebug system plugin
+ * @author		ConseilGouz
+ * @copyright	Copyright (C) 2025 ConseilGouz. All rights reserved.
+ * @license		GNU/GPL v3; see LICENSE.php
+ * 
+ *						>>>	CSS for Admin display module  <<<
+ */
+#general .col-lg-9 .control-group:nth-of-type(4){ /* Tag edit */
+	width:45%; float:left;
+}
+#general .col-lg-9 .control-group:nth-of-type(5){ /* Stop tag */
+	width:45%;float:right;
+}
+#general .control-group:nth-of-type(6){ /* select */
+	clear:both;
+}
