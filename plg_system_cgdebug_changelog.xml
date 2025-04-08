@@ -9,17 +9,6 @@
         </note>
         <fix>
             <item>Missing index.html file in media dir</item>
-        </fix>
-	</changelog>
-	<changelog>
-		<element>plg_system_cgdebug</element>
-		<type>plugin</type>
-		<group>system</group>
-		<version>1.0.3</version>
-        <note>
-            <item>Update : 08/04/2025</item>
-        </note>
-        <fix>
             <item>+ symbol not allowed in the password</item>
         </fix>
         <change>
