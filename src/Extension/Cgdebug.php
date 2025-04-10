@@ -38,10 +38,11 @@ final class Cgdebug extends CMSPlugin
         $this->setApplication($app);
         $this->setUserFactory($userFactory);
         $goval      = $this->params->get('gotag', 'godebug');
-        $stopval      = $this->params->get('stoptag', 'stopdebug');
+        $stopval    = $this->params->get('stoptag', 'stopdebug');
+        $limit      = $this->params->get('maxretry', 5);
         $godebug = isset($_GET[$goval]) ? $_GET[$goval] : null ;
         $stopdebug =  isset($_GET[$stopval]) ? $_GET[$stopval] : null;
-         if (is_null($godebug) && is_null($stopdebug)) {
+        if (is_null($godebug) && is_null($stopdebug)) {
             return;
         }
         $type = $this->params->get('passwordtype');
@@ -50,7 +51,10 @@ final class Cgdebug extends CMSPlugin
         } elseif ($type == 'value') {
             $pwd = $this->params->get('valuepassword', '');
         }
-
+        $retry = $this->getApplication()->getSession()->get('cgdebug', 0);
+        if ($retry > $limit) {
+            return;
+        }
         if ($type == 'totp') {
             $userId = $this->params->get('user', 0);
             $check = $godebug;
@@ -64,6 +68,8 @@ final class Cgdebug extends CMSPlugin
             }
             $valid = $this->getOTP($userId, $check);
             if (!$valid) {
+                $retry++;
+                $this->getApplication()->getSession()->set('cgdebug', $retry);
                 return;
             }
             if ($go) {
@@ -71,13 +77,27 @@ final class Cgdebug extends CMSPlugin
             } else {
                 $this->debug = false;
             }
-        } elseif (!is_null($godebug) && ($godebug === $pwd)) {
-            $this->debug = true;
-        } elseif (!is_null($stopdebug) && ($stopdebug === $pwd)) {
-            $this->debug = false;
+        } elseif (!is_null($godebug)) {
+            if ($godebug === $pwd) {
+                $this->debug = true;
+            } else {
+                $retry++;
+                $this->getApplication()->getSession()->set('cgdebug', $retry);
+                return;
+            }
+        } elseif (!is_null($stopdebug)) {
+            if ($stopdebug === $pwd) {
+                $this->debug = false;
+            } else {
+                $retry++;
+                $this->getApplication()->getSession()->set('cgdebug', $retry);
+                return;
+            }
         } else {
             return;
         }
+        // OK : reset retry counter
+        $this->getApplication()->getSession()->set('cgdebug', 0);
 
         $config = new \JConfig();
         $data   = ArrayHelper::fromObject($config);

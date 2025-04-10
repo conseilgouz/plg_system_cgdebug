@@ -3,6 +3,18 @@
 		<element>plg_system_cgdebug</element>
 		<type>plugin</type>
 		<group>system</group>
+		<version>1.1.2</version>
+        <note>
+            <item>Update : 10/04/2025</item>
+        </note>
+        <addition>
+            <item>New parameter : number of password retries before blocking debug switch</item>
+        </addition>
+	</changelog>
+	<changelog>
+		<element>plg_system_cgdebug</element>
+		<type>plugin</type>
+		<group>system</group>
 		<version>1.1.1</version>
         <note>
             <item>Update : 10/04/2025</item>
