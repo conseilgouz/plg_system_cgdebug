@@ -71,7 +71,7 @@ final class Cgdebug extends CMSPlugin
             } else {
                 $this->debug = false;
             }
-        } elseif (!is_null($godebug) && ($godebug === $pwd)) { {
+        } elseif (!is_null($godebug) && ($godebug === $pwd)) {
             $this->debug = true;
         } elseif (!is_null($stopdebug) && ($stopdebug === $pwd)) {
             $this->debug = false;
