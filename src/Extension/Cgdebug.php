@@ -1,5 +1,4 @@
 <?php
-
 /**
 * CG Debug  - Joomla 4.x/5.x Plugin
 * @license https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
@@ -12,10 +11,13 @@ namespace ConseilGouz\Plugin\System\CGDebug\Extension;
 // No direct access.
 defined('_JEXEC') or die();
 use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\Event\MultiFactor\Validate;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\User\UserFactoryAwareTrait;
+use Joomla\Component\Users\Administrator\Model\CaptiveModel;
 use Joomla\Event\DispatcherInterface;
 use Joomla\Registry\Registry;
 use Joomla\Filesystem\File;
@@ -24,22 +26,22 @@ use Joomla\Utilities\ArrayHelper;
 
 final class Cgdebug extends CMSPlugin
 {
+    use UserFactoryAwareTrait;
     protected $debug = JDEBUG;
     protected $error_reporting;
     public $myname = 'Cgdebug';
     protected $autoloadLanguage = true;
 
-    public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app)
+    public function __construct(DispatcherInterface $dispatcher, array $config, CMSApplicationInterface $app, $userFactory)
     {
         parent::__construct($dispatcher, $config);
-
         $this->setApplication($app);
-
+        $this->setUserFactory($userFactory);
         $goval      = $this->params->get('gotag', 'godebug');
         $stopval      = $this->params->get('stoptag', 'stopdebug');
         $godebug = isset($_GET[$goval]) ? $_GET[$goval] : null ;
         $stopdebug =  isset($_GET[$stopval]) ? $_GET[$stopval] : null;
-        if (is_null($godebug) && is_null($stopdebug)) {
+         if (is_null($godebug) && is_null($stopdebug)) {
             return;
         }
         $type = $this->params->get('passwordtype');
@@ -49,7 +51,27 @@ final class Cgdebug extends CMSPlugin
             $pwd = $this->params->get('valuepassword', '');
         }
 
-        if (!is_null($godebug) && ($godebug === $pwd)) {
+        if ($type == 'totp') {
+            $userId = $this->params->get('user', 0);
+            $check = $godebug;
+            $go = true; // assume godebug
+            if (!isset($check)) {
+                $check = $stopdebug;
+                $go = false; // we are in stop debug mode
+            }
+            if (!$check) { // nothing to check : exit
+                return;
+            }
+            $valid = $this->getOTP($userId, $check);
+            if (!$valid) {
+                return;
+            }
+            if ($go) {
+                $this->debug = true;
+            } else {
+                $this->debug = false;
+            }
+        } elseif (!is_null($godebug) && ($godebug === $pwd)) { {
             $this->debug = true;
         } elseif (!is_null($stopdebug) && ($stopdebug === $pwd)) {
             $this->debug = false;
@@ -72,10 +94,41 @@ final class Cgdebug extends CMSPlugin
         $config = new Registry($data);
         $this->writeConfigFile($config);
         $app->redirect(URI::root());
-
-
     }
+    private function getOTP($userId, $code)
+    {
+        $recordId = 0;
 
+        $user = $this->getUserFactory()->loadUserById($userId);
+        $model = new CaptiveModel(array('ignore_request' => true));
+        $records = $model->getRecords($user);
+        foreach ($records as $one) {
+            if ($one->method == 'totp') {
+                $recordId = $one->id;
+            }
+        }
+        if (!$recordId) {
+            return false;
+        }
+        $model->setState('record_id', $recordId);
+        $record = $model->getRecord($user);
+
+        $event   = new Validate($record, $user, $code);
+        $results = $this->getApplication()
+            ->getDispatcher()
+            ->dispatch($event->getName(), $event)
+            ->getArgument('result', []);
+
+        $isValidCode = false;
+        $isValidCode = array_reduce(
+            $results,
+            function (bool $carry, $result) {
+                return $carry || \boolval($result);
+            },
+            false
+        );
+        return $isValidCode;
+    }
     /**
      * Method to write the configuration to a file.
     *  from administrator/components/com_config/src/Model/ApplicationModel.php
