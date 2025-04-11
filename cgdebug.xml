@@ -16,10 +16,6 @@
         <folder>src</folder>
 		<filename>index.html</filename>
 	</files>
-	<media destination="plg_system_cgdebug" folder="media">
-		<folder>css</folder>
-		<filename>index.html</filename>
-	</media>
 	<languages>
 		<language tag="en-GB">language/en-GB/plg_system_cgdebug.ini</language>
 		<language tag="en-GB">language/en-GB/plg_system_cgdebug.sys.ini</language>
