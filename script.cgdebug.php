@@ -9,6 +9,7 @@
 defined('_JEXEC') or die('Restricted access');
 use Joomla\CMS\Factory;
 use Joomla\Database\DatabaseInterface;
+use Joomla\Filesystem\File;
 
 class plgSystemcgdebugInstallerScript
 {
