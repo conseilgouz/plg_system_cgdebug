@@ -2,12 +2,12 @@
 <extension type="plugin" group="system" method="upgrade" version="4.0">
 	<name>System - CG Debug</name>
 	<author>conseilgouz</author>
-	<creationDate>2025-04-10</creationDate>
+	<creationDate>2025-04-11</creationDate>
 	<copyright>(C)2025 ConseilGouz. All rights reserved.</copyright>
 	<license>GNU General Public License version 3 or later; see LICENSE.txt</license>
 	<authorEmail>pascal.leconte@conseilgouz.com</authorEmail>
 	<authorUrl>www.conseilgouz.com</authorUrl>
-	<version>1.1.2</version>
+	<version>1.1.3</version>
 	<description>CG_DEBUG_DESC</description>
     <namespace path="src">ConseilGouz\Plugin\System\CGDebug</namespace>
     <scriptfile>script.cgdebug.php</scriptfile>
@@ -34,8 +34,6 @@
    				<field name="version" type="version"  margintop="-3em"  extension="cgdebug" />
                 <field name="gotag" type="text" default="godebug"
                 label="CG_DEBUG_TAG" description="CG_DEBUG_TAG_DESC" />
-                <field name="stoptag" type="text" default="stopdebug"
-                label="CG_DEBUG_STOPTAG" description="CG_DEBUG_STOPTAG_DESC" />
 				<field name="passwordtype" type="radio" class="btn-group btn-group-yesno"
 					description="CG_DEBUG_TYPE_DESC"
 					label="CG_DEBUG_TYPE_LABEL"
@@ -53,7 +51,7 @@
                 <field showon="passwordtype:totp" name="user" type="user" 
                     label="CG_DEBUG_TOTPPWD" description ="CG_DEBUG_TOTPPWD_DESC" 
 					default=""  />                
-                <field name="maxretry" showon="passwordtype:totp,value" type="number" default="5"
+                <field name="maxretry" showon="passwordtype:totp,value" type="number" default="3"
                 label="CG_DEBUG_MAXRETRY" description="CG_DEBUG_MAXRETRY_DESC" min="1" max="100" />
 			</fieldset>
 		</fields>
