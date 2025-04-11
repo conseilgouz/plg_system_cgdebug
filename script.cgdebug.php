@@ -17,6 +17,12 @@ class plgSystemcgdebugInstallerScript
         if (($type != 'install') && ($type != 'update')) {
             return true;
         }
+
+        // remove obsolete directory
+		$this->delete([
+			JPATH_SITE . '/media/plg_system_cgdebug',
+		]);
+
         $db = Factory::getContainer()->get(DatabaseInterface::class);
 
         $query = $db->getQuery(true);
@@ -42,4 +48,17 @@ class plgSystemcgdebugInstallerScript
         }
         return true;
     }
+    public function delete($files = [])
+    {
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                Folder::delete($file);
+            }
+
+            if (is_file($file)) {
+                File::delete($file);
+            }
+        }
+    }
+    
 }
